@@ -1,35 +1,45 @@
 var Botkit = require('botkit')
+var wit = require('node-wit');
 
-// Expect a SLACK_TOKEN environment variable
-var slackToken = process.env.SLACK_TOKEN
-if (!slackToken) {
-  console.error('SLACK_TOKEN is required!')
-  process.exit(1)
-}
+// // Expect a SLACK_TOKEN environment variable
+// var slackToken = process.env.SLACK_TOKEN
+// if (!slackToken) {
+//   console.error('SLACK_TOKEN is required!')
+//   process.exit(1)
+// }
 
-var controller = Botkit.slackbot()
-var bot = controller.spawn({
-  token: slackToken
-})
+var accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+var verifyToken = process.env.FACEBOOK_VERIFY_TOKEN;
+var port = process.env.PORT;
 
-bot.startRTM(function (err, bot, payload) {
-  if (err) {
-    throw new Error('Could not connect to Slack')
-  }
-})
 
-controller.on('bot_channel_join', function (bot, message) {
-  bot.reply(message, "I'm here!")
-})
+// var controller = Botkit.slackbot()
+// var bot = controller.spawn({
+//   token: slackToken
+// })
 
-controller.hears(['hello', 'hi'], ['direct_mention'], function (bot, message) {
+var controller = Botkit.facebookBot({
+  access_token: accessToken,
+  verify_token: verifyToken
+});
+
+var bot = controller.spawn();
+
+controller.setupWebserver(port, function (err, webserver) {
+  if (err) return console.log(err);
+  controller.createWebhookEndpoints(webserver, bot, function () {
+    console.log("Ready!");
+  });
+});
+
+
+controller.hears(['hello', 'hi'], 'message_received', function (bot, message) {
   bot.reply(message, 'Hello.')
 })
 
-controller.hears(['hello', 'hi'], ['direct_message'], function (bot, message) {
-  bot.reply(message, 'Hello.')
-  bot.reply(message, 'It\'s nice to talk to you directly.')
-})
+controller.on('facebook_postback', function (bot, message) {
+  bot.
+});
 
 controller.hears('.*', ['mention'], function (bot, message) {
   bot.reply(message, 'You really do care about me. :heart:')
