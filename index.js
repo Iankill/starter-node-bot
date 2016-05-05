@@ -18,7 +18,7 @@ var port = process.env.PORT;
 //   token: slackToken
 // })
 
-var controller = Botkit.facebookBot({
+var controller = Botkit.facebookbot({
   access_token: accessToken,
   verify_token: verifyToken
 });
