@@ -37,9 +37,9 @@ controller.hears(['hello', 'hi'], 'message_received', function (bot, message) {
   bot.reply(message, 'Hello.')
 })
 
-controller.on('facebook_postback', function (bot, message) {
-  bot.
-});
+// controller.on('facebook_postback', function (bot, message) {
+//   bot.
+// });
 
 controller.hears('.*', ['mention'], function (bot, message) {
   bot.reply(message, 'You really do care about me. :heart:')
